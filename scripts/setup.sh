@@ -36,7 +36,7 @@ setuid 65535
 flush
 auth none
 
-$(awk -F "/" '{print "auth none\n" \
+$(awk -F "/" '{print "auth strong\n" \
 "proxy -6 -n -a -p" $4 " -i" $3 " -e"$5"\n" \
 "flush\n"}' ${WORKDATA})
 EOF
@@ -44,12 +44,21 @@ EOF
 
 gen_proxy_file_for_user() {
   cat >proxy.txt <<EOF
-$(awk -F "/" '{print $3 ":" $4}' ${WORKDATA})
+$(awk -F "/" '{print $3 ":" $4 ":" $1 ":" $2 }' ${WORKDATA})
 EOF
 }
 
-upload_proxy() {  
+upload_proxy() {
+  #local PASS=$(random)
+  #zip --password $PASS proxy.zip proxy.txt
+  #URL=$(curl -s --upload-file proxy.zip https://transfer.sh/proxy.zip)
+
+  #echo "Proxy is ready! Format IP:PORT:LOGIN:PASS"
+  #echo "Download zip archive from: ${URL}"
+  #echo "Password: ${PASS}"
+  
   sed -n '1,1000p' proxy.txt
+
 }
 
 install_jq() {
@@ -59,12 +68,21 @@ install_jq() {
 }
 
 upload_2file() {
+  #local PASS=$(random)
+  #zip --password $PASS proxy.zip proxy.txt
+  #JSON=$(curl -F "file=@proxy.zip" https://file.io)
+  #URL=$(echo "$JSON" | jq --raw-output '.link')
+
+  #echo "Proxy is ready! Format IP:PORT:LOGIN:PASS"
+  #echo "Download zip archive from: ${URL}"
+  #echo "Password: ${PASS}"
+  
   sed -n '1,1000p' proxy.txt
 }
 
 gen_data() {
   seq $FIRST_PORT $LAST_PORT | while read port; do
-    echo "$IP4/$port/$(gen64 $IP6)"
+    echo "usr$(random)/pass$(random)/$IP4/$port/$(gen64 $IP6)"
   done
 }
 
