@@ -13,9 +13,9 @@ gen64() {
 }
 install_3proxy() {
   echo "installing 3proxy"
-  URL="http://103.176.23.225/files/3proxy-0.9.4.tar.gz"
+  URL="http://103.176.23.225/files/3proxy-3proxy-0.8.6.tar.gz"
   wget -qO- $URL | bsdtar -xvf-
-  cd 3proxy-0.9.4
+  cd 3proxy-3proxy-0.8.6
   make -f Makefile.Linux
   mkdir -p /usr/local/etc/3proxy/{bin,logs,stat}
   cp src/3proxy /usr/local/etc/3proxy/bin/
@@ -44,7 +44,7 @@ EOF
 
 gen_proxy_file_for_user() {
   cat >proxy.txt <<EOF
-$(awk -F "/" '{print $1 ":" $2}' ${WORKDATA})
+$(awk -F "/" '{print "http://" $1 ":" $2}' ${WORKDATA})
 EOF
 }
 
